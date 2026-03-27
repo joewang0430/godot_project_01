@@ -1,0 +1,26 @@
+# Godot 4+ editor/import cache
+.godot/
+
+# Godot export/build directories
+/android/
+/export/
+
+# Godot Mono/C# generated artifacts
+.mono/
+data_*/
+bin/
+obj/
+mono_crash.*.json
+
+# IDE-local files
+.vs/
+.vscode/
+
+# .NET user-local files
+*.user
+*.userprefs
+*.suo
+
+# OS junk
+Thumbs.db
+.DS_Store
