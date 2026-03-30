@@ -2,11 +2,15 @@
 
 [ext_resource type="Script" uid="uid://dwq4l20rtaypt" path="res://Features/Player/Player.cs" id="1_wtcfe"]
 [ext_resource type="Texture2D" uid="uid://b21gtrar8y82e" path="res://icon.svg" id="2_0e48y"]
+[ext_resource type="PackedScene" uid="uid://be8pq77uud31s" path="res://Features/Combat/Projectiles/bullet.tscn" id="2_bd6kk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_imb0g"]
 
-[node name="Player" type="CharacterBody2D" unique_id=1137072882]
+[node name="Player" type="CharacterBody2D" unique_id=1137072882 node_paths=PackedStringArray("GunPivot", "Muzzle")]
 script = ExtResource("1_wtcfe")
+GunPivot = NodePath("GunPivot")
+Muzzle = NodePath("GunPivot/Muzzle")
+BulletScene = ExtResource("2_bd6kk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1276791715]
 scale = Vector2(6, 6)
@@ -16,3 +20,13 @@ shape = SubResource("RectangleShape2D_imb0g")
 
 [node name="Sprite2D" type="Sprite2D" parent="Visual" unique_id=669806905]
 texture = ExtResource("2_0e48y")
+
+[node name="GunPivot" type="Node2D" parent="." unique_id=248767153]
+position = Vector2(2, -2)
+
+[node name="Muzzle" type="Marker2D" parent="GunPivot" unique_id=1399639908]
+position = Vector2(80, 24)
+
+[node name="GunDebugLine" type="Line2D" parent="GunPivot" unique_id=982324273]
+points = PackedVector2Array(0, 0, 96, 0)
+width = 3.0

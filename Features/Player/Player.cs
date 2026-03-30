@@ -19,6 +19,20 @@ public partial class Player : CharacterBody2D
     [Export]
     public float JumpVelocity { get; set; } = -400.0f;
 
+    [Export]
+    public Node2D GunPivot { get; set; } = null!;
+
+    [Export]
+    public Marker2D Muzzle { get; set; } = null!;
+
+    [Export]
+    public PackedScene BulletScene { get; set; } = null!;
+
+    [Export(PropertyHint.Range, "0.05,2.0,0.01,suffix:s")]
+    public float FireInterval { get; set; } = 0.2f;
+
+    private float _fireCooldown;
+
     // 获取引擎底层物理服务器配置的标准重力加速度 (通常是 980 px/s^2)
     public float Gravity { get; set; } = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
 
@@ -34,6 +48,8 @@ public partial class Player : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
+        _fireCooldown = Mathf.Max(0.0f, _fireCooldown - (float)delta);
+
         Vector2 velocity = Velocity;
         bool isOnFloor = IsOnFloor();
         bool jumpPressed = Input.IsActionJustPressed(ActionJump);
@@ -43,6 +59,49 @@ public partial class Player : CharacterBody2D
 
         Velocity = velocity;
         MoveAndSlide();
+
+        TryShoot();
+    }
+
+    public override void _Process(double delta)
+    {
+        AimGunAtMouse();
+    }
+
+    private void AimGunAtMouse()
+    {
+        if (GunPivot == null)
+        {
+            return;
+        }
+
+        GunPivot.LookAt(GetGlobalMousePosition());
+    }
+
+    private void TryShoot()
+    {
+        if (!Input.IsMouseButtonPressed(MouseButton.Left))
+        {
+            return;
+        }
+
+        if (_fireCooldown > 0.0f || BulletScene == null || Muzzle == null)
+        {
+            return;
+        }
+
+        Node currentScene = GetTree().CurrentScene;
+        Node2D bullet = BulletScene.Instantiate<Node2D>();
+        currentScene.AddChild(bullet);
+        bullet.GlobalPosition = Muzzle.GlobalPosition;
+        bullet.GlobalRotation = Muzzle.GlobalRotation;
+
+        if (bullet is Bullet bulletLogic)
+        {
+            bulletLogic.SetDirection(Muzzle.GlobalTransform.X.Normalized());
+        }
+
+        _fireCooldown = FireInterval;
     }
 
     internal void ApplyHorizontal(float direction, ref Vector2 velocity)

@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://be8pq77uud31s"]
+
+[ext_resource type="Script" path="res://Features/Combat/Projectiles/Bullet.cs" id="1_5ylx7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_a4u6e"]
+radius = 4.0
+
+[node name="Bullet" type="Area2D" unique_id=1706582935]
+script = ExtResource("1_5ylx7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=830249159]
+shape = SubResource("CircleShape2D_a4u6e")
