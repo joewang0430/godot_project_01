@@ -5,6 +5,9 @@ public partial class Bullet : Area2D
     [Export(PropertyHint.Range, "10,3000,1,suffix:px/s")]
     public float Speed { get; set; } = 900.0f;
 
+    [Export(PropertyHint.Range, "1,200,1")]
+    public int Damage { get; set; } = 1;
+
     [Export(PropertyHint.Range, "0.1,5.0,0.1,suffix:s")]
     public float Lifetime { get; set; } = 1.5f;
 
@@ -20,6 +23,7 @@ public partial class Bullet : Area2D
     public override void _Ready()
     {
         _timeLeft = Lifetime;
+        BodyEntered += OnBodyEntered;
         QueueRedraw();
     }
 
@@ -45,5 +49,24 @@ public partial class Bullet : Area2D
         {
             _direction = direction.Normalized();
         }
+    }
+
+    private void OnBodyEntered(Node2D body)
+    {
+        if (!body.IsInGroup("enemy"))
+        {
+            return;
+        }
+
+        if (body is Enemy enemy)
+        {
+            enemy.TakeDamage(Damage);
+        }
+        else
+        {
+            body.Call("TakeDamage", Damage);
+        }
+
+        QueueFree();
     }
 }

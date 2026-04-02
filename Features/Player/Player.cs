@@ -31,13 +31,20 @@ public partial class Player : CharacterBody2D
     [Export(PropertyHint.Range, "0.05,2.0,0.01,suffix:s")]
     public float FireInterval { get; set; } = 0.2f;
 
+    [Export(PropertyHint.Range, "1,999,1")]
+    public int MaxHealth { get; set; } = 10;
+
     private float _fireCooldown;
+    public int CurrentHealth { get; private set; }
+    public bool IsDead => CurrentHealth <= 0;
 
     // 获取引擎底层物理服务器配置的标准重力加速度 (通常是 980 px/s^2)
     public float Gravity { get; set; } = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
 
     public override void _Ready()
     {
+        CurrentHealth = MaxHealth;
+
         _stateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, _stateMachine);
         RunState = new PlayerRunState(this, _stateMachine);
@@ -102,6 +109,28 @@ public partial class Player : CharacterBody2D
         }
 
         _fireCooldown = FireInterval;
+    }
+
+    public void TakeDamage(int amount)
+    {
+        if (IsDead || amount <= 0)
+        {
+            return;
+        }
+
+        CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
+        GD.Print($"Player HP: {CurrentHealth}/{MaxHealth}");
+
+        if (CurrentHealth == 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        GD.Print("Player died.");
+        QueueFree();
     }
 
     internal void ApplyHorizontal(float direction, ref Vector2 velocity)
