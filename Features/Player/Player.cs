@@ -35,6 +35,7 @@ public partial class Player : CharacterBody2D
     public int MaxHealth { get; set; } = 10;
 
     private float _fireCooldown;
+    private Node _currentScene = null!;
     public int CurrentHealth { get; private set; }
     public bool IsDead => CurrentHealth <= 0;
 
@@ -44,6 +45,7 @@ public partial class Player : CharacterBody2D
     public override void _Ready()
     {
         CurrentHealth = MaxHealth;
+        _currentScene = GetTree().CurrentScene;
 
         _stateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, _stateMachine);
@@ -97,16 +99,11 @@ public partial class Player : CharacterBody2D
             return;
         }
 
-        Node currentScene = GetTree().CurrentScene;
-        Node2D bullet = BulletScene.Instantiate<Node2D>();
-        currentScene.AddChild(bullet);
+        Bullet bullet = BulletScene.Instantiate<Bullet>();
+        _currentScene.AddChild(bullet);
         bullet.GlobalPosition = Muzzle.GlobalPosition;
         bullet.GlobalRotation = Muzzle.GlobalRotation;
-
-        if (bullet is Bullet bulletLogic)
-        {
-            bulletLogic.SetDirection(Muzzle.GlobalTransform.X.Normalized());
-        }
+        bullet.SetDirection(Muzzle.GlobalTransform.X.Normalized());
 
         _fireCooldown = FireInterval;
     }
