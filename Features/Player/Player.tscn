@@ -3,14 +3,19 @@
 [ext_resource type="Script" uid="uid://dwq4l20rtaypt" path="res://Features/Player/Player.cs" id="1_wtcfe"]
 [ext_resource type="Texture2D" uid="uid://b21gtrar8y82e" path="res://icon.svg" id="2_0e48y"]
 [ext_resource type="PackedScene" uid="uid://be8pq77uud31s" path="res://Features/Combat/Projectiles/bullet.tscn" id="2_bd6kk"]
+[ext_resource type="Script" uid="uid://8obk42lq3rvf" path="res://Features/Player/PlayerStatsComponent.cs" id="2_h6ndo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_imb0g"]
 
-[node name="Player" type="CharacterBody2D" unique_id=1137072882 node_paths=PackedStringArray("GunPivot", "Muzzle") groups=["player"]]
+[node name="Player" type="CharacterBody2D" unique_id=1137072882 node_paths=PackedStringArray("GunPivot", "Muzzle", "Stats") groups=["player"]]
 script = ExtResource("1_wtcfe")
 GunPivot = NodePath("GunPivot")
 Muzzle = NodePath("GunPivot/Muzzle")
 BulletScene = ExtResource("2_bd6kk")
+Stats = NodePath("Stats")
+
+[node name="Stats" type="Node" parent="." unique_id=40894949]
+script = ExtResource("2_h6ndo")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1276791715]
 scale = Vector2(6, 6)

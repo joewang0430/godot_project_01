@@ -31,12 +31,14 @@ public partial class Player : CharacterBody2D
     [Export(PropertyHint.Range, "0.05,2.0,0.01,suffix:s")]
     public float FireInterval { get; set; } = 0.2f;
 
-    [Export(PropertyHint.Range, "1,999,1")]
-    public int MaxHealth { get; set; } = 10;
+    [Export]
+    public PlayerStatsComponent Stats { get; set; } = null!;
 
     private float _fireCooldown;
     private Node _currentScene = null!;
-    public int CurrentHealth { get; private set; }
+    public int CurrentHealth => Stats?.CurrentHealth ?? 0;
+    public int MaxHealth => Stats?.MaxHealth ?? 0;
+    public int Coins => Stats?.Coins ?? 0;
     public bool IsDead => CurrentHealth <= 0;
 
     // 获取引擎底层物理服务器配置的标准重力加速度 (通常是 980 px/s^2)
@@ -44,8 +46,22 @@ public partial class Player : CharacterBody2D
 
     public override void _Ready()
     {
-        CurrentHealth = MaxHealth;
         _currentScene = GetTree().CurrentScene;
+
+        if (Stats == null)
+        {
+            Stats = GetNodeOrNull<PlayerStatsComponent>("Stats");
+        }
+
+        if (Stats == null)
+        {
+            GD.PushWarning("Player Stats component missing. Creating fallback stats component.");
+            Stats = new PlayerStatsComponent();
+            Stats.Name = "Stats";
+            AddChild(Stats);
+        }
+
+        Stats.ResetRuntimeState();
 
         _stateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, _stateMachine);
@@ -110,18 +126,44 @@ public partial class Player : CharacterBody2D
 
     public void TakeDamage(int amount)
     {
-        if (IsDead || amount <= 0)
+        if (IsDead || amount <= 0 || Stats == null)
         {
             return;
         }
 
-        CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
+        bool died = Stats.TakeDamage(amount);
         GD.Print($"Player HP: {CurrentHealth}/{MaxHealth}");
 
-        if (CurrentHealth == 0)
+        if (died)
         {
             Die();
         }
+    }
+
+    public void Heal(int amount)
+    {
+        if (IsDead || amount <= 0 || Stats == null)
+        {
+            return;
+        }
+
+        int before = CurrentHealth;
+        Stats.Heal(amount);
+        if (CurrentHealth != before)
+        {
+            GD.Print($"Player HP: {CurrentHealth}/{MaxHealth}");
+        }
+    }
+
+    public void AddCoins(int amount)
+    {
+        if (amount <= 0 || Stats == null)
+        {
+            return;
+        }
+
+        Stats.AddCoins(amount);
+        GD.Print($"Coins: {Coins}");
     }
 
     private void Die()
