@@ -1,10 +1,12 @@
 using Godot;
+using GodotLab.Features.Interaction;
 
 public partial class Player : CharacterBody2D
 {
     private const string ActionMoveLeft = "move_left";
     private const string ActionMoveRight = "move_right";
     private const string ActionJump = "move_up"; // 我们借用原来的 move_up 键作为跳跃键
+    private const string ActionInteract = "interact"; // 我们的交互键
 
     private PlayerStateMachine _stateMachine = null!;
 
@@ -33,6 +35,9 @@ public partial class Player : CharacterBody2D
 
     [Export]
     public PlayerStatsComponent Stats { get; set; } = null!;
+
+    [Export]
+    public Area2D InteractionArea { get; set; } = null!;
 
     private float _fireCooldown;
     private Node _currentScene = null!;
@@ -86,6 +91,48 @@ public partial class Player : CharacterBody2D
         MoveAndSlide();
 
         TryShoot();
+    }
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        base._UnhandledInput(@event);
+
+        if (@event.IsActionPressed(ActionInteract))
+        {
+            TryInteract();
+        }
+    }
+
+    private void TryInteract()
+    {
+        if (InteractionArea == null)
+        {
+            return;
+        }
+
+        // 获取雷达目前重叠的所有 Area2D 节点
+        Godot.Collections.Array<Area2D> overlappingAreas = InteractionArea.GetOverlappingAreas();
+        
+        foreach (Area2D area in overlappingAreas)
+        {
+            // SOTA: 接口的多态盲探，不用 is 具体类名，只要你实现了 IInteractable 接口，我就调！
+            if (area is IInteractable interactable)
+            {
+                interactable.Interact(this);
+                return; // 每次按键只交互一个，防止一次按键全开了
+            }
+        }
+        
+        // 可选：如果雕像是 StaticBody2D (刚体)，可以用 GetOverlappingBodies()
+        Godot.Collections.Array<Node2D> overlappingBodies = InteractionArea.GetOverlappingBodies();
+        foreach (Node2D body in overlappingBodies)
+        {
+            if (body is IInteractable interactable)
+            {
+                interactable.Interact(this);
+                return;
+            }
+        }
     }
 
     public override void _Process(double delta)

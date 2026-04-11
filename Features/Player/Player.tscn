@@ -7,6 +7,8 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_imb0g"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_6ejaw"]
+
 [node name="Player" type="CharacterBody2D" unique_id=1137072882 node_paths=PackedStringArray("GunPivot", "Muzzle", "Stats") groups=["player"]]
 script = ExtResource("1_wtcfe")
 GunPivot = NodePath("GunPivot")
@@ -35,3 +37,9 @@ position = Vector2(80, 24)
 [node name="GunDebugLine" type="Line2D" parent="GunPivot" unique_id=982324273]
 points = PackedVector2Array(0, 0, 96, 0)
 width = 3.0
+
+[node name="InteractionArea" type="Area2D" parent="." unique_id=312533854]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea" unique_id=1399680287]
+scale = Vector2(10, 10)
+shape = SubResource("CircleShape2D_6ejaw")
