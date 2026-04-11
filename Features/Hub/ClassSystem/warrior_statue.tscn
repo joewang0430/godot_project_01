@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://c47g4ixt2kbms"]
+
+[ext_resource type="Script" uid="uid://bqdn602hbvvs8" path="res://Features/Interaction/ClassStatue.cs" id="1_7f3yr"]
+[ext_resource type="Resource" uid="uid://cfpkmotuw6s2p" path="res://Features/Classes_Config/Worrior_Config.tres" id="2_rwnqg"]
+[ext_resource type="Texture2D" uid="uid://b21gtrar8y82e" path="res://icon.svg" id="3_dkau4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rft8n"]
+
+[node name="WarriorStatue" type="Area2D" unique_id=1990497804]
+script = ExtResource("1_7f3yr")
+ClassConfig = ExtResource("2_rwnqg")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=863019601]
+modulate = Color(1, 0, 0, 1)
+texture = ExtResource("3_dkau4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=355213129]
+scale = Vector2(6, 6)
+shape = SubResource("RectangleShape2D_rft8n")

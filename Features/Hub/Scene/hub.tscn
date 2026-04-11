@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://bgg2vw0b47g88"]
+
+[ext_resource type="PackedScene" uid="uid://bgyhifuuiai76" path="res://Features/Player/Player.tscn" id="1_2mgb4"]
+[ext_resource type="PackedScene" uid="uid://c47g4ixt2kbms" path="res://Features/Hub/ClassSystem/warrior_statue.tscn" id="2_ad60m"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2mgb4"]
+size = Vector2(1148, 20)
+
+[node name="Hub" type="Node2D" unique_id=940266399]
+
+[node name="Player" parent="." unique_id=1137072882 instance=ExtResource("1_2mgb4")]
+position = Vector2(192, 445)
+
+[node name="WarriorStatue" parent="." unique_id=1990497804 instance=ExtResource("2_ad60m")]
+position = Vector2(760, 496)
+ClassName = "Worrior"
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=2055827894]
+position = Vector2(571, 569)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=546430586]
+shape = SubResource("RectangleShape2D_2mgb4")
+
+[node name="ColorRect" type="ColorRect" parent="StaticBody2D" unique_id=2115692909]
+custom_minimum_size = Vector2(1148, 20)
+offset_left = -574.0
+offset_top = -10.0
+offset_right = 574.0
+offset_bottom = 10.0

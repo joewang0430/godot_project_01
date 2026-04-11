@@ -105,22 +105,28 @@ public partial class Player : CharacterBody2D
 
     private void TryInteract()
     {
+        GD.Print("[Debug] TryInteract() triggered!");
         if (InteractionArea == null)
         {
+            GD.PrintErr("[Debug] InteractionArea is missing!");
             return;
         }
 
         // 获取雷达目前重叠的所有 Area2D 节点
         Godot.Collections.Array<Area2D> overlappingAreas = InteractionArea.GetOverlappingAreas();
+        GD.Print($"[Debug] Found {overlappingAreas.Count} overlapping areas.");
         
         foreach (Area2D area in overlappingAreas)
         {
+            GD.Print($"[Debug] Evaluating area: {area.Name}");
             // SOTA: 接口的多态盲探，不用 is 具体类名，只要你实现了 IInteractable 接口，我就调！
             if (area is IInteractable interactable)
             {
+                GD.Print($"[Debug] Found IInteractable on {area.Name}!");
                 interactable.Interact(this);
                 return; // 每次按键只交互一个，防止一次按键全开了
             }
+            GD.Print($"[Debug] {area.Name} does NOT implement IInteractable.");
         }
         
         // 可选：如果雕像是 StaticBody2D (刚体)，可以用 GetOverlappingBodies()

@@ -9,12 +9,13 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6ejaw"]
 
-[node name="Player" type="CharacterBody2D" unique_id=1137072882 node_paths=PackedStringArray("GunPivot", "Muzzle", "Stats") groups=["player"]]
+[node name="Player" type="CharacterBody2D" unique_id=1137072882 node_paths=PackedStringArray("GunPivot", "Muzzle", "Stats", "InteractionArea") groups=["player"]]
 script = ExtResource("1_wtcfe")
 GunPivot = NodePath("GunPivot")
 Muzzle = NodePath("GunPivot/Muzzle")
 BulletScene = ExtResource("2_bd6kk")
 Stats = NodePath("Stats")
+InteractionArea = NodePath("InteractionArea")
 
 [node name="Stats" type="Node" parent="." unique_id=40894949]
 script = ExtResource("2_h6ndo")

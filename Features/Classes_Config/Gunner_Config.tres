@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="PlayerStatsConfig" format=3 uid="uid://da742c3posuo5"]
+
+[ext_resource type="Script" uid="uid://bp8kvhg2hei1r" path="res://Features/Player/PlayerStatsConfig.cs" id="1_qolvq"]
+
+[resource]
+script = ExtResource("1_qolvq")
+BaseMaxHealth = 60
+metadata/_custom_type_script = "uid://bp8kvhg2hei1r"
